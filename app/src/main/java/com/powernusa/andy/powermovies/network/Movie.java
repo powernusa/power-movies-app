@@ -1,11 +1,22 @@
 package com.powernusa.andy.powermovies.network;
 
+import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.google.gson.annotations.SerializedName;
+import com.powernusa.andy.powermovies.R;
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 public class Movie implements Parcelable {
+    public static final String LOG_TAG = Movie.class.getSimpleName();
     @SerializedName("id")
     private long mId;
 
@@ -38,6 +49,69 @@ public class Movie implements Parcelable {
         mReleaseDate = releaseDate;
         mBackdrop = backgrop;
     }
+
+    @Nullable
+    public String getTitle(){
+        return mTitle;
+    }
+
+    public long getId(){
+        return mId;
+    }
+
+    @Nullable
+    public String getPosterUrl(Context context){
+        if(mPoster != null && !mPoster.isEmpty()){
+            return context.getResources().getString(R.string.url_for_downloading_poster) + mPoster;
+        }
+        return null;
+    }
+
+    public String getPoster(){
+        return mPoster;
+    }
+
+    public String getReleaseDate(Context context){
+        String inputPattern = "yyyy-MM-dd";
+        SimpleDateFormat inputFormat = new SimpleDateFormat(inputPattern, Locale.US);
+        if(mReleaseDate != null && !mReleaseDate.isEmpty()){
+            try {
+                Date date = inputFormat.parse(mReleaseDate);
+                return DateFormat.getDateInstance().format(date);
+            } catch (ParseException e) {
+                e.printStackTrace();
+                Log.e(LOG_TAG,"The release date not parsed successfully: " + mReleaseDate);
+            }
+        }else{
+            mReleaseDate = context.getString(R.string.release_date_unknown);
+        }
+
+        return mReleaseDate;
+    }
+
+    public String getReleaseDate(){
+        return mReleaseDate;
+    }
+
+    public String getmOverview(){
+        return mOverview;
+    }
+    public String getUserRating(){
+        return mUserRating;
+    }
+
+    public String getBackdrop(){
+        return mBackdrop;
+    }
+
+    public String getBackdropUrl(Context context){
+        if(mBackdrop != null && !mBackdrop.isEmpty()){
+            return context.getString(R.string.url_for_downloading_backdrop) + mBackdrop;
+        }
+        return null;
+    }
+
+
 
     protected Movie(Parcel in) {
         mId = in.readLong();

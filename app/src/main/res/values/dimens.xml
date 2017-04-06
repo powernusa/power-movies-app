@@ -2,4 +2,7 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
+
+    <string name="url_for_downloading_poster">http://image.tmdb.org/t/p/w342</string>
+    <string name="url_for_downloading_backdrop">http://image.tmdb.org/t/p/original</string>
 </resources>

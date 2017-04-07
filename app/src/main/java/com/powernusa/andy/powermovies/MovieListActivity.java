@@ -1,18 +1,31 @@
 package com.powernusa.andy.powermovies;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 public class MovieListActivity extends AppCompatActivity {
+
+
+    @Bind(R.id.toolbar)
+    Toolbar mToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_list);
+        ButterKnife.bind(this);
+
+        mToolbar.setTitle("Power Movies");
+        setSupportActionBar(mToolbar);
+
         new FetchMoviesTask().execute();
     }
 

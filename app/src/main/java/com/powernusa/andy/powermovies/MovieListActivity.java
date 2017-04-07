@@ -11,7 +11,7 @@ import android.widget.Toast;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class MovieListActivity extends AppCompatActivity {
+public class MovieListActivity extends AppCompatActivity implements FetchMoviesTask.Listener{
 
 
     @Bind(R.id.toolbar)
@@ -23,7 +23,7 @@ public class MovieListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_movie_list);
         ButterKnife.bind(this);
 
-        mToolbar.setTitle("Power Movies");
+        mToolbar.setTitle("Power Movies App");
         setSupportActionBar(mToolbar);
 
         new FetchMoviesTask().execute();
@@ -56,5 +56,10 @@ public class MovieListActivity extends AppCompatActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onFetchFinished(Command command) {
+
     }
 }

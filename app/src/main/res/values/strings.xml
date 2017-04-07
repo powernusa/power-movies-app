@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Power Movies</string>
     <string name="release_date_unknown">Release Date is unknown</string>
+    <string name="sort_by">Sort By</string>
 </resources>

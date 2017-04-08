@@ -1,8 +1,12 @@
 package com.powernusa.andy.powermovies;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.powernusa.andy.powermovies.network.Movie;
 
@@ -28,11 +32,16 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.View
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return null;
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.movie_list_content,parent,false);
+        Context context = view.getContext();
+        int gridColsNumber =2;
+        view.getLayoutParams().height = (int) (parent.getWidth() / gridColsNumber * Movie.POSTER_ASPECT_RATIO);
+        return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
+        
 
     }
 
@@ -42,9 +51,17 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.View
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
+        public View mView;
+        public TextView mTitleTextview;
+        public ImageView mThumbnail;
 
         public ViewHolder(View itemView) {
             super(itemView);
+            mView = itemView;
+            mTitleTextview = (TextView) mView.findViewById(R.id.title);
+            mThumbnail = (ImageView)mView.findViewById(R.id.thumbnail);
+
+
         }
     }
 }

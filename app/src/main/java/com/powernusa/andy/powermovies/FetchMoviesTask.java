@@ -48,6 +48,7 @@ public class FetchMoviesTask extends AsyncTask<Void,Void,List<Movie>>{
         return null;
     }
 
+/*
     @Override
     protected void onPostExecute(List<Movie> movies) {
         if(movies!= null && !movies.isEmpty()){
@@ -57,4 +58,6 @@ public class FetchMoviesTask extends AsyncTask<Void,Void,List<Movie>>{
             }
         }
     }
+    */
+
 }

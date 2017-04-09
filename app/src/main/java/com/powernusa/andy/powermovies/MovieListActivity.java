@@ -3,16 +3,21 @@ package com.powernusa.andy.powermovies;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.powernusa.andy.powermovies.network.Movie;
+
+import java.util.List;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
 public class MovieListActivity extends AppCompatActivity implements FetchMoviesTask.Listener{
-
+    public static final String LOG_TAG = MovieListActivity.class.getSimpleName();
 
     @Bind(R.id.toolbar)
     Toolbar mToolbar;
@@ -26,7 +31,8 @@ public class MovieListActivity extends AppCompatActivity implements FetchMoviesT
         mToolbar.setTitle("Power Movies App");
         setSupportActionBar(mToolbar);
 
-        new FetchMoviesTask().execute();
+        //new FetchMoviesTask().execute();
+        new Extend_FetchMoviesTask().execute();
     }
 
     @Override
@@ -61,5 +67,17 @@ public class MovieListActivity extends AppCompatActivity implements FetchMoviesT
     @Override
     public void onFetchFinished(Command command) {
 
+    }
+
+    public class Extend_FetchMoviesTask extends FetchMoviesTask{
+        @Override
+        protected void onPostExecute(List<Movie> movies) {
+            if(movies != null && !movies.isEmpty()){
+                Log.d(LOG_TAG,">>>Movies size in MovieListActivity : " + movies.size());
+                for(int i =0;i< movies.size();i++){
+                    Log.d(LOG_TAG,"Movie: " + movies.get(i).getTitle());
+                }
+            }
+        }
     }
 }

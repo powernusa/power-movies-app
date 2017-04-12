@@ -1,6 +1,7 @@
 package com.powernusa.andy.powermovies;
 
 import android.content.Context;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -8,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.powernusa.andy.powermovies.network.Movie;
 import com.squareup.picasso.Picasso;
@@ -44,17 +46,23 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.View
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, final int position) {
         holder.mTitleTextview.setVisibility(View.VISIBLE);
         holder.mTitleTextview.setText(mMovies.get(position).getTitle());
         holder.mThumbnail.setVisibility(View.VISIBLE);
-        Context context = holder.mView.getContext();
+        final Context context = holder.mView.getContext();
 
         Picasso.with(context)
                 .load(mMovies.get(position).getPosterUrl(context))
                 .into(holder.mThumbnail);
-        
 
+        holder.mView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Toast.makeText(v.getContext(),"Movie Clicked: " + mMovies.get(position).getTitle(),Toast.LENGTH_LONG).show();
+                mCallbacks.open(mMovies.get(position),position);
+            }
+        });
     }
 
     @Override

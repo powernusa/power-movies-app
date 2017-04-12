@@ -1,6 +1,7 @@
 package com.powernusa.andy.powermovies;
 
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -91,6 +92,7 @@ public class MovieListActivity extends AppCompatActivity implements FetchMoviesT
     //MovieListAdapter callbacks
     @Override
     public void open(Movie movie, int position) {
+        Snackbar.make(findViewById(R.id.coordinatorLayout),"Movie returned: " + movie.getTitle(),Snackbar.LENGTH_LONG).show();
 
     }
 

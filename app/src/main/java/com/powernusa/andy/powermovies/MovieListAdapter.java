@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.powernusa.andy.powermovies.network.Movie;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -46,6 +47,13 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.View
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.mTitleTextview.setVisibility(View.VISIBLE);
         holder.mTitleTextview.setText(mMovies.get(position).getTitle());
+        holder.mThumbnail.setVisibility(View.VISIBLE);
+        Context context = holder.mView.getContext();
+
+        Picasso.with(context)
+                .load(mMovies.get(position).getPosterUrl(context))
+                .into(holder.mThumbnail);
+        
 
     }
 

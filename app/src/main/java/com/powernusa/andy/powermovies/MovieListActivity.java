@@ -2,6 +2,8 @@ package com.powernusa.andy.powermovies;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -11,28 +13,45 @@ import android.widget.Toast;
 
 import com.powernusa.andy.powermovies.network.Movie;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class MovieListActivity extends AppCompatActivity implements FetchMoviesTask.Listener{
+public class MovieListActivity extends AppCompatActivity implements FetchMoviesTask.Listener,
+    MovieListAdapter.Callbacks{
     public static final String LOG_TAG = MovieListActivity.class.getSimpleName();
 
-    @Bind(R.id.toolbar)
+    //@Bind(R.id.toolbar)
     Toolbar mToolbar;
+
+    private RecyclerView mRecyclerView;
+    private MovieListAdapter mAdapter;
+    private boolean mTwoPane;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_list);
-        ButterKnife.bind(this);
+        //ButterKnife.bind(this);
+        initializeWidgets();
 
-        mToolbar.setTitle("Power Movies App");
+        mToolbar.setTitle("Popular Movies App");
         setSupportActionBar(mToolbar);
+
+        mAdapter = new MovieListAdapter(new ArrayList<Movie>(),this);
+        mRecyclerView.setLayoutManager(new GridLayoutManager(this,2));
+        mRecyclerView.setAdapter(mAdapter);
 
         //new FetchMoviesTask().execute();
         new Extend_FetchMoviesTask().execute();
+    }
+
+    private void initializeWidgets(){
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mRecyclerView = (RecyclerView) findViewById(R.id.movie_list);
+
     }
 
     @Override
@@ -69,6 +88,12 @@ public class MovieListActivity extends AppCompatActivity implements FetchMoviesT
 
     }
 
+    //MovieListAdapter callbacks
+    @Override
+    public void open(Movie movie, int position) {
+
+    }
+
     public class Extend_FetchMoviesTask extends FetchMoviesTask{
         @Override
         protected void onPostExecute(List<Movie> movies) {
@@ -77,7 +102,9 @@ public class MovieListActivity extends AppCompatActivity implements FetchMoviesT
                 for(int i =0;i< movies.size();i++){
                     Log.d(LOG_TAG,"Movie: " + movies.get(i).getTitle());
                 }
+
             }
+            mAdapter.add(new ArrayList<>(movies));
         }
     }
 }

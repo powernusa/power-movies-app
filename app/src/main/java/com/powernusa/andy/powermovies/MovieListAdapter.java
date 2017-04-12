@@ -2,6 +2,7 @@ package com.powernusa.andy.powermovies;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,8 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.View
     public static final String LOG_TAG = MovieListAdapter.class.getSimpleName();
     private ArrayList<Movie> mMovies;
     private Callbacks mCallbacks;
+
+
 
     public interface Callbacks{
         void open(Movie movie,int position);
@@ -41,13 +44,25 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.View
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        
+        holder.mTitleTextview.setVisibility(View.VISIBLE);
+        holder.mTitleTextview.setText(mMovies.get(position).getTitle());
 
     }
 
     @Override
     public int getItemCount() {
         return mMovies.size();
+    }
+
+    public void add(ArrayList<Movie> movies){
+        mMovies = movies;
+        if(movies != null && !movies.isEmpty()){
+            Log.d(LOG_TAG,">>>Movies from MovieListAdapter size: " + movies.size());
+            for(int i=0;i<movies.size();i++){
+                Log.d(LOG_TAG,i + ": " + movies.get(i).getTitle());
+            }
+        }
+        notifyDataSetChanged();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{

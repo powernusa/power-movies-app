@@ -40,7 +40,7 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.View
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.movie_list_content,parent,false);
         Context context = view.getContext();
-        int gridColsNumber =2;
+        int gridColsNumber = context.getResources().getInteger(R.integer.grid_num_cols);
         view.getLayoutParams().height = (int) (parent.getWidth() / gridColsNumber * Movie.POSTER_ASPECT_RATIO);
         return new ViewHolder(view);
     }

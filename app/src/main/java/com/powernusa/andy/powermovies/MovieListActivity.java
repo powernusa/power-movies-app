@@ -42,7 +42,8 @@ public class MovieListActivity extends AppCompatActivity implements FetchMoviesT
         setSupportActionBar(mToolbar);
 
         mAdapter = new MovieListAdapter(new ArrayList<Movie>(),this);
-        mRecyclerView.setLayoutManager(new GridLayoutManager(this,2));
+        int num_cols = getResources().getInteger(R.integer.grid_num_cols);
+        mRecyclerView.setLayoutManager(new GridLayoutManager(this,num_cols));
         mRecyclerView.setAdapter(mAdapter);
 
         //new FetchMoviesTask().execute();

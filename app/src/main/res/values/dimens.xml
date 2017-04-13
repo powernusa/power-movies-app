@@ -5,4 +5,6 @@
 
     <string name="url_for_downloading_poster">http://image.tmdb.org/t/p/w342</string>
     <string name="url_for_downloading_backdrop">http://image.tmdb.org/t/p/original</string>
+
+    <integer name="grid_num_cols">2</integer>
 </resources>

@@ -20,25 +20,24 @@ import java.util.ArrayList;
  * Created by Andy on 4/7/2017.
  */
 
-public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.ViewHolder>{
+public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.ViewHolder> {
     public static final String LOG_TAG = MovieListAdapter.class.getSimpleName();
     private ArrayList<Movie> mMovies;
     private Callbacks mCallbacks;
 
 
-
-    public interface Callbacks{
-        void open(Movie movie,int position);
+    public interface Callbacks {
+        void open(Movie movie, int position);
     }
 
-    public MovieListAdapter(ArrayList<Movie> movies,Callbacks callbacks){
+    public MovieListAdapter(ArrayList<Movie> movies, Callbacks callbacks) {
         mMovies = movies;
         mCallbacks = callbacks;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.movie_list_content,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.movie_list_content, parent, false);
         Context context = view.getContext();
         int gridColsNumber = context.getResources().getInteger(R.integer.grid_num_cols);
         view.getLayoutParams().height = (int) (parent.getWidth() / gridColsNumber * Movie.POSTER_ASPECT_RATIO);
@@ -59,8 +58,7 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.View
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Toast.makeText(v.getContext(),"Movie Clicked: " + mMovies.get(position).getTitle(),Toast.LENGTH_LONG).show();
-                mCallbacks.open(mMovies.get(position),position);
+                mCallbacks.open(mMovies.get(position), position);
             }
         });
     }
@@ -70,18 +68,14 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.View
         return mMovies.size();
     }
 
-    public void add(ArrayList<Movie> movies){
-        mMovies = movies;
-        if(movies != null && !movies.isEmpty()){
-            Log.d(LOG_TAG,">>>Movies from MovieListAdapter size: " + movies.size());
-            for(int i=0;i<movies.size();i++){
-                Log.d(LOG_TAG,i + ": " + movies.get(i).getTitle());
-            }
+    public void add(ArrayList<Movie> movies) {
+        if (movies != null && !movies.isEmpty()) {
+            mMovies = movies;
+            notifyDataSetChanged();
         }
-        notifyDataSetChanged();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder {
         public View mView;
         public TextView mTitleTextview;
         public ImageView mThumbnail;
@@ -90,7 +84,7 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.View
             super(itemView);
             mView = itemView;
             mTitleTextview = (TextView) mView.findViewById(R.id.title);
-            mThumbnail = (ImageView)mView.findViewById(R.id.thumbnail);
+            mThumbnail = (ImageView) mView.findViewById(R.id.thumbnail);
 
 
         }

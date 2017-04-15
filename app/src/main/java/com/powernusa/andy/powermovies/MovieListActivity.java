@@ -94,6 +94,9 @@ public class MovieListActivity extends AppCompatActivity implements FetchMoviesT
     @Override
     public void open(Movie movie, int position) {
         Snackbar.make(findViewById(R.id.coordinatorLayout),"Movie returned: " + movie.getTitle(),Snackbar.LENGTH_LONG).show();
+        if(mTwoPane){
+            
+        }
 
     }
 

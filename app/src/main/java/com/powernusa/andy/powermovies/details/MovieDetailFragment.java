@@ -7,7 +7,13 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.widget.ShareActionProvider;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -24,6 +30,7 @@ import com.squareup.picasso.Picasso;
  */
 public class MovieDetailFragment extends Fragment {
     private Movie mMovie;
+    private ShareActionProvider mShareActionProvider;
 
     public MovieDetailFragment() {
         // Required empty public constructor
@@ -32,10 +39,12 @@ public class MovieDetailFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if(getArguments().containsKey(Constants.ARG_MOVIE)){
             mMovie = getArguments().getParcelable(Constants.ARG_MOVIE);
-            Toast.makeText(getActivity(), "Movie in fragment: " + mMovie.getTitle(), Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getActivity(), "Movie in fragment: " + mMovie.getTitle(), Toast.LENGTH_SHORT).show();
         }
+        setHasOptionsMenu(true);
 
     }
 
@@ -43,10 +52,12 @@ public class MovieDetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.movie_detail,container,false);
+
         initializeWidget(view);
 
         Picasso.with(getActivity())
                 .load(mMovie.getPosterUrl(getActivity()))
+                .config(Bitmap.Config.RGB_565)
                 .into(mMoviePoster);
 
         mMovieTitle.setText(mMovie.getTitle());
@@ -81,6 +92,13 @@ public class MovieDetailFragment extends Fragment {
                     .config(Bitmap.Config.RGB_565)
                     .into(movieBackdrop);
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.movie_detail_fragment, menu);
+        MenuItem shareTrailerMenuItem = menu.findItem(R.id.share_trailer);
+        mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(shareTrailerMenuItem);
     }
 
 }

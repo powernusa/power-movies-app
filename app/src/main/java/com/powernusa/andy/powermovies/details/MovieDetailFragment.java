@@ -25,6 +25,9 @@ import com.powernusa.andy.powermovies.network.Movie;
 import com.powernusa.andy.powermovies.utility.Constants;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -71,6 +74,22 @@ public class MovieDetailFragment extends Fragment {
         if(mMovie.getUserRating() != null && !mMovie.getUserRating().isEmpty()){
             String userRatingStr = getResources().getString(R.string.user_rating_movie,mMovie.getUserRating());
             mUserRating.setText(userRatingStr);
+
+            float userRating = Float.valueOf(mMovie.getUserRating()) / 2;
+            int integerPart = (int) userRating;
+
+            // Fill stars
+            for (int i = 0; i < integerPart; i++) {
+                mRatingStars.get(i).setImageResource(R.drawable.ic_star_black_24dp);
+            }
+
+            // Fill half star
+            if (Math.round(userRating) > integerPart) {
+                mRatingStars.get(integerPart).setImageResource(
+                        R.drawable.ic_star_half_black_24dp);
+            }
+        }else {
+            mUserRating.setVisibility(View.GONE);
         }
 
     }
@@ -79,6 +98,8 @@ public class MovieDetailFragment extends Fragment {
     private TextView mReleaseDate;
     private TextView mOverview;
     private TextView mUserRating;
+    private ImageView mFirstStar,mSecondStar,mThirdStar,mFourthStar,mFifthStar;
+    private ArrayList<ImageView> mRatingStars = new ArrayList<ImageView>();
 
     private void initializeWidget(View view){
         mMoviePoster = (ImageView) view.findViewById(R.id.movie_poster);
@@ -86,6 +107,17 @@ public class MovieDetailFragment extends Fragment {
         mReleaseDate = (TextView)view.findViewById(R.id.movie_release_date);
         mUserRating = (TextView)view.findViewById(R.id.movie_user_rating);
         mOverview = (TextView)view.findViewById(R.id.movie_overview);
+
+        //Initialize mRatingStars
+        mFirstStar = (ImageView) view.findViewById(R.id.rating_first_star);
+        mSecondStar = (ImageView) view.findViewById(R.id.rating_second_star);
+        mThirdStar = (ImageView) view.findViewById(R.id.rating_third_star);
+        mFourthStar = (ImageView) view.findViewById(R.id.rating_fourth_star);
+        mFifthStar = (ImageView) view.findViewById(R.id.rating_fifth_star);
+        mRatingStars.add(0,mFirstStar);mRatingStars.add(1,mSecondStar);
+        mRatingStars.add(2,mThirdStar);mRatingStars.add(3,mFourthStar);
+        mRatingStars.add(4,mFifthStar);
+
 
     }
 

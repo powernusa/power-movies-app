@@ -1,5 +1,7 @@
 package com.powernusa.andy.powermovies.details;
 
+import android.graphics.Color;
+import android.os.Build;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -20,6 +22,11 @@ public class MovieDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_movie_detail);
         mToolbar = (Toolbar) findViewById(R.id.detail_toolbar);
         setSupportActionBar(mToolbar);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setStatusBarColor(Color.TRANSPARENT);  //WOW nice!
+        }
+
         ActionBar actionBar = getSupportActionBar();
         if(actionBar != null){
             actionBar.setDisplayHomeAsUpEnabled(true);

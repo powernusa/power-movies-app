@@ -61,16 +61,31 @@ public class MovieDetailFragment extends Fragment {
                 .into(mMoviePoster);
 
         mMovieTitle.setText(mMovie.getTitle());
+        mReleaseDate.setText(mMovie.getReleaseDate(getActivity()));
+        mOverview.setText(mMovie.getmOverview());
+        updateRating();
 
         return view;
     }
+    private void updateRating(){
+        if(mMovie.getUserRating() != null && !mMovie.getUserRating().isEmpty()){
+            String userRatingStr = getResources().getString(R.string.user_rating_movie,mMovie.getUserRating());
+            mUserRating.setText(userRatingStr);
+        }
 
+    }
     private ImageView mMoviePoster;
     private TextView mMovieTitle;
+    private TextView mReleaseDate;
+    private TextView mOverview;
+    private TextView mUserRating;
 
     private void initializeWidget(View view){
         mMoviePoster = (ImageView) view.findViewById(R.id.movie_poster);
         mMovieTitle = (TextView)view.findViewById(R.id.movie_title);
+        mReleaseDate = (TextView)view.findViewById(R.id.movie_release_date);
+        mUserRating = (TextView)view.findViewById(R.id.movie_user_rating);
+        mOverview = (TextView)view.findViewById(R.id.movie_overview);
 
     }
 

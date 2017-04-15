@@ -1,5 +1,6 @@
 package com.powernusa.andy.powermovies;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -12,7 +13,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.powernusa.andy.powermovies.details.MovieDetailActivity;
 import com.powernusa.andy.powermovies.network.Movie;
+import com.powernusa.andy.powermovies.utility.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -93,9 +96,13 @@ public class MovieListActivity extends AppCompatActivity implements FetchMoviesT
     //MovieListAdapter callbacks
     @Override
     public void open(Movie movie, int position) {
-        Snackbar.make(findViewById(R.id.coordinatorLayout),"Movie returned: " + movie.getTitle(),Snackbar.LENGTH_LONG).show();
+        //Snackbar.make(findViewById(R.id.coordinatorLayout),"Movie returned: " + movie.getTitle(),Snackbar.LENGTH_LONG).show();
         if(mTwoPane){
-            
+
+        }else{
+            Intent intent = new Intent(this, MovieDetailActivity.class);
+            intent.putExtra(Constants.ARG_MOVIE,movie);
+            startActivity(intent);
         }
 
     }

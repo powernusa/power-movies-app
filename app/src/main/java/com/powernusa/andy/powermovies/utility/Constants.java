@@ -11,4 +11,7 @@ public class Constants {
     public static final String MOST_POPULAR = "popular";
     public static final String TOP_RATED = "top_rated";
     public static final String FAVORITES = "favorites";
+
+    /* MovieDetailFragment */
+    public static final String ARG_MOVIE = "arg_movie";
 }

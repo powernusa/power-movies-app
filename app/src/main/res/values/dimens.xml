@@ -12,4 +12,6 @@
     <dimen name="button_horizontal_padding">16dp</dimen>
     <dimen name="button_vertical_padding">0dp</dimen>
     <dimen name="button_vertical_margin">16dp</dimen>
+
+    <dimen name="padding_16dp">16dp</dimen>
 </resources>

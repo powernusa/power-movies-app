@@ -46,7 +46,7 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.View
 
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
-        holder.mTitleTextview.setVisibility(View.VISIBLE);
+        holder.mTitleTextview.setVisibility(View.GONE);
         holder.mTitleTextview.setText(mMovies.get(position).getTitle());
         holder.mThumbnail.setVisibility(View.VISIBLE);
         final Context context = holder.mView.getContext();

@@ -11,6 +11,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.powernusa.andy.powermovies.details.MovieDetailActivity;
@@ -44,18 +46,24 @@ public class MovieListActivity extends AppCompatActivity implements FetchMoviesT
         mToolbar.setTitle("Popular Movies App");
         setSupportActionBar(mToolbar);
 
+        //mTwoPane = findViewById(R.id.movie_detail_container) != null;
+
         mAdapter = new MovieListAdapter(new ArrayList<Movie>(),this);
         int num_cols = getResources().getInteger(R.integer.grid_num_cols);
         mRecyclerView.setLayoutManager(new GridLayoutManager(this,num_cols));
         mRecyclerView.setAdapter(mAdapter);
 
         //new FetchMoviesTask().execute();
-        new Extend_FetchMoviesTask().execute();
+        mProgress.setVisibility(View.VISIBLE);
+        new FetchMoviesTask(Constants.MOST_POPULAR,this).execute();
     }
+
+    private ProgressBar mProgress;
 
     private void initializeWidgets(){
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mRecyclerView = (RecyclerView) findViewById(R.id.movie_list);
+        mProgress = (ProgressBar) findViewById(R.id.progress);
 
     }
 
@@ -70,14 +78,19 @@ public class MovieListActivity extends AppCompatActivity implements FetchMoviesT
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.sort_by_most_popular:
-                Toast.makeText(getApplicationContext(),"Most Popular",Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getApplicationContext(),"Most Popular",Toast.LENGTH_SHORT).show();
+                mProgress.setVisibility(View.VISIBLE);
+                new FetchMoviesTask(Constants.MOST_POPULAR,this).execute();
                 item.setChecked(true);
                 break;
             case R.id.sort_by_top_rated:
-                Toast.makeText(getApplicationContext(),"Top Rated",Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getApplicationContext(),"Top Rated",Toast.LENGTH_SHORT).show();
+                mProgress.setVisibility(View.VISIBLE);
+                new FetchMoviesTask(Constants.TOP_RATED,this).execute();
                 item.setChecked(true);
                 break;
             case R.id.sort_by_favorites:
+                mProgress.setVisibility(View.VISIBLE);
                 Toast.makeText(getApplicationContext(),"Favorites",Toast.LENGTH_SHORT).show();
                 item.setChecked(true);
                 break;
@@ -89,7 +102,9 @@ public class MovieListActivity extends AppCompatActivity implements FetchMoviesT
     }
 
     @Override
-    public void onFetchFinished(Command command) {
+    public void onFetchFinished(ArrayList<Movie> movies) {
+        mProgress.setVisibility(View.GONE);
+        mAdapter.add(movies);
 
     }
 
@@ -107,17 +122,4 @@ public class MovieListActivity extends AppCompatActivity implements FetchMoviesT
 
     }
 
-    public class Extend_FetchMoviesTask extends FetchMoviesTask{
-        @Override
-        protected void onPostExecute(List<Movie> movies) {
-            if(movies != null && !movies.isEmpty()){
-                Log.d(LOG_TAG,">>>Movies size in MovieListActivity : " + movies.size());
-                for(int i =0;i< movies.size();i++){
-                    Log.d(LOG_TAG,"Movie: " + movies.get(i).getTitle());
-                }
-
-            }
-            mAdapter.add(new ArrayList<>(movies));
-        }
-    }
 }

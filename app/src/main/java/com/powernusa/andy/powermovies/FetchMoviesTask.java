@@ -9,6 +9,7 @@ import com.powernusa.andy.powermovies.network.Movies;
 import com.powernusa.andy.powermovies.utility.Constants;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -20,16 +21,25 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Created by Andy on 4/7/2017.
  */
 
-public class FetchMoviesTask extends AsyncTask<Void,Void,List<Movie>>{
+public class FetchMoviesTask extends AsyncTask<Void,Void,ArrayList<Movie>>{
     public static final String LOG_TAG = FetchMoviesTask.class.getSimpleName();
 
-    private String mSortBy = Constants.MOST_POPULAR;
+    private String mSortBy;
+    private FetchMoviesTask.Listener mListener;
+
     interface Listener{
-        void onFetchFinished(Command command);
+        void onFetchFinished(ArrayList<Movie> movies);
+    }
+
+    //public FetchMoviesTask(){}
+    public FetchMoviesTask(String sortBy, FetchMoviesTask.Listener listener){
+
+        mSortBy = sortBy;
+        mListener = listener;
     }
 
     @Override
-    protected List<Movie> doInBackground(Void... voids) {
+    protected ArrayList<Movie> doInBackground(Void... voids) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Constants.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -37,6 +47,7 @@ public class FetchMoviesTask extends AsyncTask<Void,Void,List<Movie>>{
 
         MovieDatabaseService service = retrofit.create(MovieDatabaseService.class);
         Call<Movies> call = service.discoverMovies(mSortBy,Constants.API_KEY);
+
         try {
             Response<Movies> response = call.execute();
             Movies movies = response.body();
@@ -48,16 +59,17 @@ public class FetchMoviesTask extends AsyncTask<Void,Void,List<Movie>>{
         return null;
     }
 
-/*
+
     @Override
-    protected void onPostExecute(List<Movie> movies) {
+    protected void onPostExecute(ArrayList<Movie> movies) {
         if(movies!= null && !movies.isEmpty()){
-            Log.d(LOG_TAG,">>>Movies size : " + movies.size());
-            for(int i =0;i< movies.size();i++){
-                Log.d(LOG_TAG,"Movie: " + movies.get(i).getTitle());
-            }
+
+            mListener.onFetchFinished(movies);
+        }
+        else{
+            //no movies returned
         }
     }
-    */
+
 
 }

@@ -3,6 +3,7 @@ package com.powernusa.andy.powermovies.details;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -10,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.ShareActionProvider;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,6 +24,7 @@ import android.widget.Toast;
 
 import com.powernusa.andy.powermovies.R;
 import com.powernusa.andy.powermovies.network.Movie;
+import com.powernusa.andy.powermovies.network.Trailer;
 import com.powernusa.andy.powermovies.utility.Constants;
 import com.squareup.picasso.Picasso;
 
@@ -31,9 +34,10 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MovieDetailFragment extends Fragment {
+public class MovieDetailFragment extends Fragment implements FetchTrailersTask.Listener{
     private Movie mMovie;
     private ShareActionProvider mShareActionProvider;
+    public static final String LOG_TAG = MovieDetailFragment.class.getSimpleName();
 
     public MovieDetailFragment() {
         // Required empty public constructor
@@ -67,9 +71,16 @@ public class MovieDetailFragment extends Fragment {
         mReleaseDate.setText(mMovie.getReleaseDate(getActivity()));
         mOverview.setText(mMovie.getmOverview());
         updateRating();
-
+        fetchTrailers();
         return view;
     }
+
+    private void fetchTrailers(){
+        FetchTrailersTask task = new FetchTrailersTask(this);
+        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,mMovie.getId());
+    }
+
+
     private void updateRating(){
         if(mMovie.getUserRating() != null && !mMovie.getUserRating().isEmpty()){
             String userRatingStr = getResources().getString(R.string.user_rating_movie,mMovie.getUserRating());
@@ -148,4 +159,10 @@ public class MovieDetailFragment extends Fragment {
         mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(shareTrailerMenuItem);
     }
 
+    @Override
+    public void onFetchFinished(List<Trailer> trailers) {
+        for(int i =0;i<trailers.size();i++){
+            Log.d(LOG_TAG,"trailer url: " + trailers.get(i).getTrailerUrl());
+        }
+    }
 }

@@ -2,13 +2,17 @@ package com.powernusa.andy.powermovies.details;
 
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.ShareActionProvider;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -34,10 +38,14 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MovieDetailFragment extends Fragment implements FetchTrailersTask.Listener{
+public class MovieDetailFragment extends Fragment implements FetchTrailersTask.Listener
+            ,TrailerListAdapter.Callbacks{
     private Movie mMovie;
     private ShareActionProvider mShareActionProvider;
     public static final String LOG_TAG = MovieDetailFragment.class.getSimpleName();
+
+    private RecyclerView mRecylerViewForTrailers;
+    private TrailerListAdapter mTrailerListAdapter;
 
     public MovieDetailFragment() {
         // Required empty public constructor
@@ -46,6 +54,7 @@ public class MovieDetailFragment extends Fragment implements FetchTrailersTask.L
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
 
         if(getArguments().containsKey(Constants.ARG_MOVIE)){
             mMovie = getArguments().getParcelable(Constants.ARG_MOVIE);
@@ -71,6 +80,16 @@ public class MovieDetailFragment extends Fragment implements FetchTrailersTask.L
         mReleaseDate.setText(mMovie.getReleaseDate(getActivity()));
         mOverview.setText(mMovie.getmOverview());
         updateRating();
+
+        //For horizontal list of trailers
+        LinearLayoutManager layoutManager
+                = new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false);
+        mRecylerViewForTrailers.setLayoutManager(layoutManager);
+        mTrailerListAdapter = new TrailerListAdapter(new ArrayList<Trailer>(),this);
+        mRecylerViewForTrailers.setAdapter(mTrailerListAdapter);
+        mRecylerViewForTrailers.setNestedScrollingEnabled(false);
+
+
         fetchTrailers();
         return view;
     }
@@ -129,6 +148,8 @@ public class MovieDetailFragment extends Fragment implements FetchTrailersTask.L
         mRatingStars.add(2,mThirdStar);mRatingStars.add(3,mFourthStar);
         mRatingStars.add(4,mFifthStar);
 
+        mRecylerViewForTrailers = (RecyclerView) view.findViewById(R.id.trailer_list);
+
 
     }
 
@@ -161,8 +182,20 @@ public class MovieDetailFragment extends Fragment implements FetchTrailersTask.L
 
     @Override
     public void onFetchFinished(List<Trailer> trailers) {
+
+        mTrailerListAdapter.add(trailers);
+
+        /*
         for(int i =0;i<trailers.size();i++){
             Log.d(LOG_TAG,"trailer url: " + trailers.get(i).getTrailerUrl());
         }
+        */
+    }
+
+    @Override
+    public void watch(Trailer trailer, int position) {
+        //Log.d(LOG_TAG,">>>Trailer URL: " + Uri.parse(trailer.getTrailerUrl()) + " Position: " + position);
+        //Log.d(LOG_TAG,"---Trailer URL: " + trailer.getTrailerUrl() + " Position: " + position);
+        startActivity(new Intent(Intent.ACTION_VIEW,Uri.parse(trailer.getTrailerUrl())));
     }
 }

@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
     <Button
+        android:id="@+id/button_mark_as_favorite"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Add To Favorites"
@@ -11,6 +12,7 @@
         android:visibility="visible"
         android:theme="@style/Button.Red"/>
     <Button
+        android:id="@+id/button_remove_from_favorite"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Remove from favorites"

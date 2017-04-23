@@ -3,6 +3,7 @@ package com.powernusa.andy.powermovies.details;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -22,11 +23,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.powernusa.andy.powermovies.R;
+import com.powernusa.andy.powermovies.data.MovieContract;
 import com.powernusa.andy.powermovies.network.Movie;
 import com.powernusa.andy.powermovies.network.Trailer;
 import com.powernusa.andy.powermovies.utility.Constants;
@@ -123,35 +126,7 @@ public class MovieDetailFragment extends Fragment implements FetchTrailersTask.L
         }
 
     }
-    private ImageView mMoviePoster;
-    private TextView mMovieTitle;
-    private TextView mReleaseDate;
-    private TextView mOverview;
-    private TextView mUserRating;
-    private ImageView mFirstStar,mSecondStar,mThirdStar,mFourthStar,mFifthStar;
-    private ArrayList<ImageView> mRatingStars = new ArrayList<ImageView>();
 
-    private void initializeWidget(View view){
-        mMoviePoster = (ImageView) view.findViewById(R.id.movie_poster);
-        mMovieTitle = (TextView)view.findViewById(R.id.movie_title);
-        mReleaseDate = (TextView)view.findViewById(R.id.movie_release_date);
-        mUserRating = (TextView)view.findViewById(R.id.movie_user_rating);
-        mOverview = (TextView)view.findViewById(R.id.movie_overview);
-
-        //Initialize mRatingStars
-        mFirstStar = (ImageView) view.findViewById(R.id.rating_first_star);
-        mSecondStar = (ImageView) view.findViewById(R.id.rating_second_star);
-        mThirdStar = (ImageView) view.findViewById(R.id.rating_third_star);
-        mFourthStar = (ImageView) view.findViewById(R.id.rating_fourth_star);
-        mFifthStar = (ImageView) view.findViewById(R.id.rating_fifth_star);
-        mRatingStars.add(0,mFirstStar);mRatingStars.add(1,mSecondStar);
-        mRatingStars.add(2,mThirdStar);mRatingStars.add(3,mFourthStar);
-        mRatingStars.add(4,mFifthStar);
-
-        mRecylerViewForTrailers = (RecyclerView) view.findViewById(R.id.trailer_list);
-
-
-    }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -197,5 +172,104 @@ public class MovieDetailFragment extends Fragment implements FetchTrailersTask.L
         //Log.d(LOG_TAG,">>>Trailer URL: " + Uri.parse(trailer.getTrailerUrl()) + " Position: " + position);
         //Log.d(LOG_TAG,"---Trailer URL: " + trailer.getTrailerUrl() + " Position: " + position);
         startActivity(new Intent(Intent.ACTION_VIEW,Uri.parse(trailer.getTrailerUrl())));
+    }
+
+    /***********************************************************************************************
+     *
+     *  Favorites + AsyncTask
+     *
+     * *********************************************************************************************
+     */
+
+    
+    private View.OnClickListener mButtonListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()){
+                case R.id.button_mark_as_favorite:
+                    Toast.makeText(getContext(),"Mark Favorite clicked",Toast.LENGTH_SHORT).show();
+                    mWatchTrailerButtton.setEnabled(true);
+                    mRemoveFavoriteButton.setVisibility(View.VISIBLE);
+                    mMarkFavoriteButton.setVisibility(View.GONE);
+                    break;
+                case R.id.button_remove_from_favorite:
+                    Toast.makeText(getContext(),"Remove Favorite clicked",Toast.LENGTH_SHORT).show();
+                    mRemoveFavoriteButton.setVisibility(View.GONE);
+                    mMarkFavoriteButton.setVisibility(View.VISIBLE);
+                    break;
+                case R.id.button_watch_trailer:
+                    Toast.makeText(getContext(),"Watch Trailer clicked",Toast.LENGTH_SHORT).show();
+                    break;
+                default:
+
+                    break;
+            }
+
+        }
+    };
+
+    private boolean isFavorite(){
+        Cursor movieCursor = getContext().getContentResolver().query(
+                MovieContract.MovieEntry.CONTENT_URI,
+                new String[]{MovieContract.MovieEntry.COLUMN_MOVIE_ID},
+                MovieContract.MovieEntry.COLUMN_MOVIE_ID + "=?",
+                new String[]{Long.toString(mMovie.getId())},
+                null
+        );
+
+        if(movieCursor != null && movieCursor.moveToFirst()){
+            movieCursor.close();
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+
+    /***********************************************************************************************
+     *
+     *   Initiazlize Widget
+     *
+     * *********************************************************************************************
+     */
+
+    private ImageView mMoviePoster;
+    private TextView mMovieTitle;
+    private TextView mReleaseDate;
+    private TextView mOverview;
+    private TextView mUserRating;
+    private ImageView mFirstStar,mSecondStar,mThirdStar,mFourthStar,mFifthStar;
+    private ArrayList<ImageView> mRatingStars = new ArrayList<ImageView>();
+    private Button mMarkFavoriteButton;
+    private Button mRemoveFavoriteButton;
+    private Button mWatchTrailerButtton;
+
+    private void initializeWidget(View view){
+        mMoviePoster = (ImageView) view.findViewById(R.id.movie_poster);
+        mMovieTitle = (TextView)view.findViewById(R.id.movie_title);
+        mReleaseDate = (TextView)view.findViewById(R.id.movie_release_date);
+        mUserRating = (TextView)view.findViewById(R.id.movie_user_rating);
+        mOverview = (TextView)view.findViewById(R.id.movie_overview);
+
+        //Initialize mRatingStars
+        mFirstStar = (ImageView) view.findViewById(R.id.rating_first_star);
+        mSecondStar = (ImageView) view.findViewById(R.id.rating_second_star);
+        mThirdStar = (ImageView) view.findViewById(R.id.rating_third_star);
+        mFourthStar = (ImageView) view.findViewById(R.id.rating_fourth_star);
+        mFifthStar = (ImageView) view.findViewById(R.id.rating_fifth_star);
+        mRatingStars.add(0,mFirstStar);mRatingStars.add(1,mSecondStar);
+        mRatingStars.add(2,mThirdStar);mRatingStars.add(3,mFourthStar);
+        mRatingStars.add(4,mFifthStar);
+
+        mRecylerViewForTrailers = (RecyclerView) view.findViewById(R.id.trailer_list);
+
+        mMarkFavoriteButton = (Button) view.findViewById(R.id.button_mark_as_favorite);
+        mRemoveFavoriteButton = (Button) view.findViewById(R.id.button_remove_from_favorite);
+        mWatchTrailerButtton = (Button) view.findViewById(R.id.button_watch_trailer);
+        mMarkFavoriteButton.setOnClickListener(mButtonListener);
+        mRemoveFavoriteButton.setOnClickListener(mButtonListener);
+        mWatchTrailerButtton.setOnClickListener(mButtonListener);
+
+
     }
 }

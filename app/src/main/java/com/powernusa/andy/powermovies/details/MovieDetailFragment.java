@@ -2,6 +2,7 @@ package com.powernusa.andy.powermovies.details;
 
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -181,21 +182,23 @@ public class MovieDetailFragment extends Fragment implements FetchTrailersTask.L
      * *********************************************************************************************
      */
 
-    
+
     private View.OnClickListener mButtonListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             switch (v.getId()){
                 case R.id.button_mark_as_favorite:
                     Toast.makeText(getContext(),"Mark Favorite clicked",Toast.LENGTH_SHORT).show();
-                    mWatchTrailerButtton.setEnabled(true);
-                    mRemoveFavoriteButton.setVisibility(View.VISIBLE);
-                    mMarkFavoriteButton.setVisibility(View.GONE);
+                    //mWatchTrailerButtton.setEnabled(true);
+                    //mRemoveFavoriteButton.setVisibility(View.VISIBLE);
+                    //mMarkFavoriteButton.setVisibility(View.GONE);
+                    markAsFavorite();
                     break;
                 case R.id.button_remove_from_favorite:
                     Toast.makeText(getContext(),"Remove Favorite clicked",Toast.LENGTH_SHORT).show();
-                    mRemoveFavoriteButton.setVisibility(View.GONE);
-                    mMarkFavoriteButton.setVisibility(View.VISIBLE);
+                    //mRemoveFavoriteButton.setVisibility(View.GONE);
+                    //mMarkFavoriteButton.setVisibility(View.VISIBLE);
+                    removeFromFavorite();
                     break;
                 case R.id.button_watch_trailer:
                     Toast.makeText(getContext(),"Watch Trailer clicked",Toast.LENGTH_SHORT).show();
@@ -225,6 +228,90 @@ public class MovieDetailFragment extends Fragment implements FetchTrailersTask.L
         }
     }
 
+    private void markAsFavorite(){
+        new AsyncTask<Void,Void,Void>(){
+
+            @Override
+            protected Void doInBackground(Void... params) {
+                if(!isFavorite()){
+                    ContentValues cv = new ContentValues();
+                    cv.put(MovieContract.MovieEntry.COLUMN_MOVIE_ID,mMovie.getId());
+                    cv.put(MovieContract.MovieEntry.COLUMN_MOVIE_BACKDROP_PATH,mMovie.getBackdrop());
+                    cv.put(MovieContract.MovieEntry.COLUMN_MOVIE_OVERVIEW,mMovie.getmOverview());
+                    cv.put(MovieContract.MovieEntry.COLUMN_MOVIE_POSTER_PATH,mMovie.getPoster());
+                    cv.put(MovieContract.MovieEntry.COLUMN_MOVIE_RELEASE_DATE,mMovie.getReleaseDate());
+                    cv.put(MovieContract.MovieEntry.COLUMN_MOVIE_TITLE,mMovie.getTitle());
+                    cv.put(MovieContract.MovieEntry.COLUMN_MOVIE_VOTE_AVERAGE,mMovie.getUserRating());
+                    getContext().getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI,cv);
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                updateFavoriteButtons();
+                debugDatabase();
+            }
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    }
+    private void debugDatabase(){
+        // this is not thread safe
+        Cursor movieCursor = getContext().getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI,
+                null,
+                MovieContract.MovieEntry.COLUMN_MOVIE_ID + "=?",
+                new String[]{Long.toString(mMovie.getId())},
+                null);
+        if(movieCursor!= null && movieCursor.moveToFirst()){
+            Toast.makeText(getContext(),"Movie in database: " + movieCursor.getString(movieCursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_MOVIE_TITLE)),
+                    Toast.LENGTH_SHORT).show();
+        }else{
+            Toast.makeText(getContext(),"Movie removed",Toast.LENGTH_SHORT).show();
+        }
+
+    }
+    private void removeFromFavorite(){
+        new AsyncTask<Void,Void,Void>(){
+
+            @Override
+            protected Void doInBackground(Void... params) {
+                if(isFavorite()){
+                    getContext().getContentResolver().delete(MovieContract.MovieEntry.CONTENT_URI,
+                            MovieContract.MovieEntry.COLUMN_MOVIE_ID + "=?",
+                            new String[]{Long.toString(mMovie.getId())});
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                updateFavoriteButtons();
+                debugDatabase();
+            }
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    }
+
+    private void updateFavoriteButtons(){
+        new AsyncTask<Void,Void,Boolean>(){
+
+            @Override
+            protected Boolean doInBackground(Void... params) {
+                return isFavorite();
+            }
+
+            @Override
+            protected void onPostExecute(Boolean aBoolean) {
+                if(aBoolean){
+                    mMarkFavoriteButton.setVisibility(View.GONE);
+                    mRemoveFavoriteButton.setVisibility(View.VISIBLE);
+                }else{
+                    mMarkFavoriteButton.setVisibility(View.VISIBLE);
+                    mRemoveFavoriteButton.setVisibility(View.GONE);
+                }
+            }
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+
+    }
 
     /***********************************************************************************************
      *

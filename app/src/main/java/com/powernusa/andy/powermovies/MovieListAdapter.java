@@ -1,6 +1,7 @@
 package com.powernusa.andy.powermovies;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -11,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.powernusa.andy.powermovies.data.MovieContract;
 import com.powernusa.andy.powermovies.network.Movie;
 import com.squareup.picasso.Picasso;
 
@@ -51,8 +53,9 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.View
         holder.mThumbnail.setVisibility(View.VISIBLE);
         final Context context = holder.mView.getContext();
 
+        String posterUrl = mMovies.get(position).getPosterUrl(context);
         Picasso.with(context)
-                .load(mMovies.get(position).getPosterUrl(context))
+                .load(posterUrl)
                 .into(holder.mThumbnail);
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
@@ -69,10 +72,31 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.View
     }
 
     public void add(ArrayList<Movie> movies) {
+        mMovies.clear();
         if (movies != null && !movies.isEmpty()) {
-            mMovies = movies;
+            //mMovies = movies;
+            mMovies.addAll(movies);
             notifyDataSetChanged();
         }
+    }
+
+    public void add(Cursor cursor){
+        mMovies.clear();
+        if(cursor != null && cursor.moveToFirst()){
+            do{
+                long id = cursor.getLong(MovieContract.MovieEntry.COL_MOVIE_ID);
+                String title = cursor.getString(MovieContract.MovieEntry.COL_MOVIE_TITLE);
+                String posterPath = cursor.getString(MovieContract.MovieEntry.COL_MOVIE_POSTER_PATH);
+                String overview = cursor.getString(MovieContract.MovieEntry.COL_MOVIE_OVERVIEW);
+                String rating = cursor.getString(MovieContract.MovieEntry.COL_MOVIE_VOTE_AVERAGE);
+                String releaseDate = cursor.getString(MovieContract.MovieEntry.COL_MOVIE_RELEASE_DATE);
+                String backdropPath = cursor.getString(MovieContract.MovieEntry.COL_MOVIE_BACKDROP_PATH);
+                Movie movie = new Movie(id,title,posterPath,overview,rating,releaseDate,backdropPath);
+                mMovies.add(movie);
+            }while(cursor.moveToNext());
+
+        }
+        notifyDataSetChanged();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

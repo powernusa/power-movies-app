@@ -1,8 +1,12 @@
 package com.powernusa.andy.powermovies;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,6 +19,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.powernusa.andy.powermovies.data.MovieContract;
 import com.powernusa.andy.powermovies.details.MovieDetailActivity;
 import com.powernusa.andy.powermovies.network.Movie;
 import com.powernusa.andy.powermovies.utility.Constants;
@@ -26,8 +31,9 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 public class MovieListActivity extends AppCompatActivity implements FetchMoviesTask.Listener,
-    MovieListAdapter.Callbacks{
+    MovieListAdapter.Callbacks,LoaderManager.LoaderCallbacks<Cursor>{
     public static final String LOG_TAG = MovieListActivity.class.getSimpleName();
+    public static final int FAV_MOVIE_LOADER = 1;
 
     //@Bind(R.id.toolbar)
     Toolbar mToolbar;
@@ -92,6 +98,7 @@ public class MovieListActivity extends AppCompatActivity implements FetchMoviesT
             case R.id.sort_by_favorites:
                 mProgress.setVisibility(View.VISIBLE);
                 Toast.makeText(getApplicationContext(),"Favorites",Toast.LENGTH_SHORT).show();
+                fetchMovies(Constants.FAVORITES);
                 item.setChecked(true);
                 break;
 
@@ -107,7 +114,11 @@ public class MovieListActivity extends AppCompatActivity implements FetchMoviesT
         mAdapter.add(movies);
 
     }
-
+    private void fetchMovies(String sortBy){
+        if(sortBy.equals(Constants.FAVORITES)){
+            getSupportLoaderManager().initLoader(FAV_MOVIE_LOADER,null,this);
+        }
+    }
     //MovieListAdapter callbacks
     @Override
     public void open(Movie movie, int position) {
@@ -122,4 +133,26 @@ public class MovieListActivity extends AppCompatActivity implements FetchMoviesT
 
     }
 
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        findViewById(R.id.progress).setVisibility(View.VISIBLE);
+        return new CursorLoader(this,
+                MovieContract.MovieEntry.CONTENT_URI,
+                null,
+                null,
+                null,
+                null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        mAdapter.add(data);
+        findViewById(R.id.progress).setVisibility(View.GONE);
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
+    }
 }

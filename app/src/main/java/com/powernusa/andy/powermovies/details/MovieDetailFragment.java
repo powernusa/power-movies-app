@@ -84,6 +84,7 @@ public class MovieDetailFragment extends Fragment implements FetchTrailersTask.L
         mReleaseDate.setText(mMovie.getReleaseDate(getActivity()));
         mOverview.setText(mMovie.getmOverview());
         updateRating();
+        updateFavoriteButtons();
 
         //For horizontal list of trailers
         LinearLayoutManager layoutManager
@@ -258,12 +259,13 @@ public class MovieDetailFragment extends Fragment implements FetchTrailersTask.L
         // this is not thread safe
         Cursor movieCursor = getContext().getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI,
                 null,
-                MovieContract.MovieEntry.COLUMN_MOVIE_ID + "=?",
-                new String[]{Long.toString(mMovie.getId())},
+                null,
+                null,
                 null);
+        //Log.d(LOG_TAG,"Number of rows: " + movieCursor.getCount());
         if(movieCursor!= null && movieCursor.moveToFirst()){
-            Toast.makeText(getContext(),"Movie in database: " + movieCursor.getString(movieCursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_MOVIE_TITLE)),
-                    Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(),"Movie in database: " + movieCursor.getString(movieCursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_MOVIE_TITLE))
+                    + "Movie count in database: " + movieCursor.getCount(), Toast.LENGTH_SHORT).show();
         }else{
             Toast.makeText(getContext(),"Movie removed",Toast.LENGTH_SHORT).show();
         }

@@ -22,7 +22,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Created by andy on 26/04/2017.
  */
 
-public class FetchReviewsTask extends AsyncTask<Long,Void,List<Review>> {
+public class FetchReviewsTask extends AsyncTask<Long,Void,ArrayList<Review>> {
     public static final String LOG_TAG = FetchReviewsTask.class.getSimpleName();
     private final Listener mListener;
 
@@ -31,11 +31,11 @@ public class FetchReviewsTask extends AsyncTask<Long,Void,List<Review>> {
     }
 
     public interface Listener{
-        void onReviewsFetchFinished(List<Review> reviews);
+        void onReviewsFetchFinished(ArrayList<Review> reviews);
     }
 
     @Override
-    protected List<Review> doInBackground(Long... params) {
+    protected ArrayList<Review> doInBackground(Long... params) {
         if(params.length == 0){
             return null;
         }
@@ -52,7 +52,7 @@ public class FetchReviewsTask extends AsyncTask<Long,Void,List<Review>> {
         try {
             Response<Reviews> response = call.execute();
             Reviews reviews = response.body();
-            return reviews.getReviews();
+            return (ArrayList<Review>) reviews.getReviews();
         } catch (IOException e) {
             e.printStackTrace();
             Log.e(LOG_TAG,"A problem occured talking to the movie db.",e);
@@ -61,7 +61,7 @@ public class FetchReviewsTask extends AsyncTask<Long,Void,List<Review>> {
     }
 
     @Override
-    protected void onPostExecute(List<Review> reviews) {
+    protected void onPostExecute(ArrayList<Review> reviews) {
         if(reviews != null){
             mListener.onReviewsFetchFinished(reviews);
         }else{

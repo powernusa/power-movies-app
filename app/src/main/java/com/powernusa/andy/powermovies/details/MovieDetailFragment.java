@@ -32,6 +32,7 @@ import android.widget.Toast;
 import com.powernusa.andy.powermovies.R;
 import com.powernusa.andy.powermovies.data.MovieContract;
 import com.powernusa.andy.powermovies.network.Movie;
+import com.powernusa.andy.powermovies.network.Review;
 import com.powernusa.andy.powermovies.network.Trailer;
 import com.powernusa.andy.powermovies.utility.Constants;
 import com.squareup.picasso.Picasso;
@@ -42,14 +43,17 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MovieDetailFragment extends Fragment implements FetchTrailersTask.Listener
-            ,TrailerListAdapter.Callbacks{
+public class MovieDetailFragment extends Fragment implements FetchTrailersTask.Listener,
+                        TrailerListAdapter.Callbacks,ReviewListAdpater.Callbacks,FetchReviewsTask.Listener{
     private Movie mMovie;
     private ShareActionProvider mShareActionProvider;
     public static final String LOG_TAG = MovieDetailFragment.class.getSimpleName();
 
     private RecyclerView mRecylerViewForTrailers;
     private TrailerListAdapter mTrailerListAdapter;
+
+    private RecyclerView mRecyclerViewForReviews;
+    private ReviewListAdpater mReviewListAdapter;
 
     public MovieDetailFragment() {
         // Required empty public constructor
@@ -87,22 +91,27 @@ public class MovieDetailFragment extends Fragment implements FetchTrailersTask.L
         updateFavoriteButtons();
 
         //For horizontal list of trailers
-        LinearLayoutManager layoutManager
+        LinearLayoutManager trailerLayoutManager
                 = new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false);
-        mRecylerViewForTrailers.setLayoutManager(layoutManager);
+        mRecylerViewForTrailers.setLayoutManager(trailerLayoutManager);
         mTrailerListAdapter = new TrailerListAdapter(new ArrayList<Trailer>(),this);
         mRecylerViewForTrailers.setAdapter(mTrailerListAdapter);
         mRecylerViewForTrailers.setNestedScrollingEnabled(false);
 
+        //For vertical list of reviews
+        LinearLayoutManager reviewLayoutManager
+                = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false);
+        mRecyclerViewForReviews.setLayoutManager(reviewLayoutManager);
+        mReviewListAdapter = new ReviewListAdpater(new ArrayList<Review>(),this);
+        mRecyclerViewForReviews.setAdapter(mReviewListAdapter);
+
 
         fetchTrailers();
+        fetchReviews();
         return view;
     }
 
-    private void fetchTrailers(){
-        FetchTrailersTask task = new FetchTrailersTask(this);
-        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,mMovie.getId());
-    }
+
 
 
     private void updateRating(){
@@ -157,16 +166,25 @@ public class MovieDetailFragment extends Fragment implements FetchTrailersTask.L
         mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(shareTrailerMenuItem);
     }
 
+    private void fetchTrailers(){
+        FetchTrailersTask task = new FetchTrailersTask(this);
+        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,mMovie.getId());
+    }
+
+    private void fetchReviews(){
+        FetchReviewsTask task = new FetchReviewsTask(this);
+        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,mMovie.getId());
+    }
+
     @Override
     public void onTrailersFetchFinished(List<Trailer> trailers) {
-
         mTrailerListAdapter.add(trailers);
 
-        /*
-        for(int i =0;i<trailers.size();i++){
-            Log.d(LOG_TAG,"trailer url: " + trailers.get(i).getTrailerUrl());
-        }
-        */
+    }
+
+    @Override
+    public void onReviewsFetchFinished(ArrayList<Review> reviews) {
+        mReviewListAdapter.add(reviews);
     }
 
     @Override
@@ -176,6 +194,12 @@ public class MovieDetailFragment extends Fragment implements FetchTrailersTask.L
         startActivity(new Intent(Intent.ACTION_VIEW,Uri.parse(trailer.getTrailerUrl())));
     }
 
+    @Override
+    public void read(Review review, int position) {
+        //Toast.makeText(getContext(),"Position clicked: " + position + " :" + review.getUrl(),Toast.LENGTH_SHORT).show();
+        startActivity(new Intent(Intent.ACTION_VIEW,Uri.parse(review.getUrl())));
+
+    }
     /***********************************************************************************************
      *
      *  Favorites + AsyncTask
@@ -359,6 +383,10 @@ public class MovieDetailFragment extends Fragment implements FetchTrailersTask.L
         mRemoveFavoriteButton.setOnClickListener(mButtonListener);
         mWatchTrailerButtton.setOnClickListener(mButtonListener);
 
+        mRecyclerViewForReviews = (RecyclerView) view.findViewById(R.id.review_list);
 
     }
+
+
+
 }

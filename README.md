@@ -9,3 +9,7 @@
 
 # Youtube
 [![Youtube demo](https://img.youtube.com/vi/z6viZHWIwRU/0.jpg)](https://www.youtube.com/watch?v=z6viZHWIwRU)
+
+# Youtube custom initial image
+[![custom image](https://cloud.githubusercontent.com/assets/13763933/25438771/a85f2884-2ac4-11e7-90e2-ab3e80e6b191.png)](https://www.youtube.com/watch?v=z6viZHWIwRU)
+

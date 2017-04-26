@@ -158,7 +158,7 @@ public class MovieDetailFragment extends Fragment implements FetchTrailersTask.L
     }
 
     @Override
-    public void onFetchFinished(List<Trailer> trailers) {
+    public void onTrailersFetchFinished(List<Trailer> trailers) {
 
         mTrailerListAdapter.add(trailers);
 

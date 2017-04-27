@@ -14,4 +14,6 @@ public class Constants {
 
     /* MovieDetailFragment */
     public static final String ARG_MOVIE = "arg_movie";
+    public static final String EXTRA_TRAILERS = "EXTRA_TRAILERS";
+    public static final String EXTRA_REVIEWS = "EXTRA_REVIEWS";
 }

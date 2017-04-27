@@ -58,6 +58,10 @@ public class ReviewListAdpater extends RecyclerView.Adapter<ReviewListAdpater.Vi
         return mReviews.size();
     }
 
+    public ArrayList<Review> getReviews(){
+        return mReviews;
+    }
+
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private TextView mReviewAuthor;
         private TextView mReviewContent;

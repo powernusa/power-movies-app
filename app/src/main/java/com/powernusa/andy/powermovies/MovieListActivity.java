@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.powernusa.andy.powermovies.data.MovieContract;
 import com.powernusa.andy.powermovies.details.MovieDetailActivity;
+import com.powernusa.andy.powermovies.details.MovieDetailFragment;
 import com.powernusa.andy.powermovies.network.Movie;
 import com.powernusa.andy.powermovies.utility.Constants;
 
@@ -52,7 +53,7 @@ public class MovieListActivity extends AppCompatActivity implements FetchMoviesT
         mToolbar.setTitle("Popular Movies App");
         setSupportActionBar(mToolbar);
 
-        //mTwoPane = findViewById(R.id.movie_detail_container) != null;
+        mTwoPane = findViewById(R.id.movie_detail_container) != null;
 
         mAdapter = new MovieListAdapter(new ArrayList<Movie>(),this);
         int num_cols = getResources().getInteger(R.integer.grid_num_cols);
@@ -124,6 +125,15 @@ public class MovieListActivity extends AppCompatActivity implements FetchMoviesT
     public void open(Movie movie, int position) {
         //Snackbar.make(findViewById(R.id.coordinatorLayout),"Movie returned: " + movie.getTitle(),Snackbar.LENGTH_LONG).show();
         if(mTwoPane){
+
+            MovieDetailFragment fragment = new MovieDetailFragment();
+            Bundle args = new Bundle();
+            args.putParcelable(Constants.ARG_MOVIE,movie);
+            fragment.setArguments(args);
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.movie_detail_container,fragment)
+                    .commit();
+
 
         }else{
             Intent intent = new Intent(this, MovieDetailActivity.class);

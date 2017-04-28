@@ -7,4 +7,6 @@
     <color name="text_color_for_movie_overview">@android:color/black</color>
     <color name="text_color_for_review_content">@android:color/black</color>
 
+    <color name="empty_view_text_color">#BDBDBD</color>
+
 </resources>

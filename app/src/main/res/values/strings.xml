@@ -7,4 +7,6 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="share_trailer">Share trailer</string>
     <string name="user_rating_movie">TMDb: %1$s/10</string>
+    <string name="title_for_empty_view_favorites">No movies</string>
+    <string name="text_for_empty_view_favorites">You can add here your favorite movies</string>
 </resources>

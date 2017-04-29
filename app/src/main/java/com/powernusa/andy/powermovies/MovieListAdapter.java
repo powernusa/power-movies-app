@@ -99,6 +99,10 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.View
         notifyDataSetChanged();
     }
 
+    public ArrayList<Movie>  getMovies(){
+        return mMovies;
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         public View mView;
         public TextView mTitleTextview;

@@ -23,7 +23,7 @@
         <include layout="@layout/movie_list"/>
     </FrameLayout>
     <include layout="@layout/empty_state_connection"/>
-    <include layout="@layout/activity_state_favorites"/>
+    <include layout="@layout/empty_state_favorites"/>
     <ProgressBar
         android:id="@+id/progress"
         android:layout_width="wrap_content"

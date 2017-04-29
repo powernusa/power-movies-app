@@ -16,4 +16,8 @@ public class Constants {
     public static final String ARG_MOVIE = "arg_movie";
     public static final String EXTRA_TRAILERS = "EXTRA_TRAILERS";
     public static final String EXTRA_REVIEWS = "EXTRA_REVIEWS";
+
+    /* MovieListActivity */
+    public static final String EXTRA_MOVIES = "EXTRA_MOVIES";
+    public static final String EXTRA_SORT_BY = "EXTRA_SORT_BY";
 }

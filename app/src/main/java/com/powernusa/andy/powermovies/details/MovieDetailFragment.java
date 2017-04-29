@@ -241,20 +241,20 @@ public class MovieDetailFragment extends Fragment implements FetchTrailersTask.L
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.button_mark_as_favorite:
-                    Toast.makeText(getContext(), "Mark Favorite clicked", Toast.LENGTH_SHORT).show();
+                  //  Toast.makeText(getContext(), "Mark Favorite clicked", Toast.LENGTH_SHORT).show();
                     //mWatchTrailerButtton.setEnabled(true);
                     //mRemoveFavoriteButton.setVisibility(View.VISIBLE);
                     //mMarkFavoriteButton.setVisibility(View.GONE);
                     markAsFavorite();
                     break;
                 case R.id.button_remove_from_favorite:
-                    Toast.makeText(getContext(), "Remove Favorite clicked", Toast.LENGTH_SHORT).show();
+                 //   Toast.makeText(getContext(), "Remove Favorite clicked", Toast.LENGTH_SHORT).show();
                     //mRemoveFavoriteButton.setVisibility(View.GONE);
                     //mMarkFavoriteButton.setVisibility(View.VISIBLE);
                     removeFromFavorite();
                     break;
                 case R.id.button_watch_trailer:
-                    Toast.makeText(getContext(), "Watch Trailer clicked", Toast.LENGTH_SHORT).show();
+                 //   Toast.makeText(getContext(), "Watch Trailer clicked", Toast.LENGTH_SHORT).show();
                     break;
                 default:
 
@@ -317,10 +317,10 @@ public class MovieDetailFragment extends Fragment implements FetchTrailersTask.L
                 null);
         //Log.d(LOG_TAG,"Number of rows: " + movieCursor.getCount());
         if (movieCursor != null && movieCursor.moveToFirst()) {
-            Toast.makeText(getContext(), "Movie in database: " + movieCursor.getString(movieCursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_MOVIE_TITLE))
-                    + "Movie count in database: " + movieCursor.getCount(), Toast.LENGTH_SHORT).show();
+        //    Toast.makeText(getContext(), "Movie in database: " + movieCursor.getString(movieCursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_MOVIE_TITLE))
+          //          + "Movie count in database: " + movieCursor.getCount(), Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(getContext(), "Movie removed", Toast.LENGTH_SHORT).show();
+          //  Toast.makeText(getContext(), "Movie removed", Toast.LENGTH_SHORT).show();
         }
 
     }

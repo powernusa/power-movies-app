@@ -3,6 +3,7 @@ package com.powernusa.andy.powermovies;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -32,7 +33,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 public class MovieListActivity extends AppCompatActivity implements FetchMoviesTask.Listener,
-    MovieListAdapter.Callbacks,LoaderManager.LoaderCallbacks<Cursor>{
+        MovieListAdapter.Callbacks, LoaderManager.LoaderCallbacks<Cursor> {
     public static final String LOG_TAG = MovieListActivity.class.getSimpleName();
     public static final int FAV_MOVIE_LOADER = 1;
 
@@ -42,6 +43,7 @@ public class MovieListActivity extends AppCompatActivity implements FetchMoviesT
     private RecyclerView mRecyclerView;
     private MovieListAdapter mAdapter;
     private boolean mTwoPane;
+    private String mSortBy = Constants.MOST_POPULAR;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,23 +57,42 @@ public class MovieListActivity extends AppCompatActivity implements FetchMoviesT
 
         mTwoPane = findViewById(R.id.movie_detail_container) != null;
 
-        mAdapter = new MovieListAdapter(new ArrayList<Movie>(),this);
+        mAdapter = new MovieListAdapter(new ArrayList<Movie>(), this);
         int num_cols = getResources().getInteger(R.integer.grid_num_cols);
-        mRecyclerView.setLayoutManager(new GridLayoutManager(this,num_cols));
+        mRecyclerView.setLayoutManager(new GridLayoutManager(this, num_cols));
         mRecyclerView.setAdapter(mAdapter);
 
-        //new FetchMoviesTask().execute();
-        mProgress.setVisibility(View.VISIBLE);
-        new FetchMoviesTask(Constants.MOST_POPULAR,this).execute();
+        if (savedInstanceState != null) {
+            mSortBy = savedInstanceState.getString(Constants.EXTRA_SORT_BY);
+            if (savedInstanceState.containsKey(Constants.EXTRA_MOVIES)) {
+                ArrayList<Movie> movies = savedInstanceState.getParcelableArrayList(Constants.EXTRA_MOVIES);
+                mAdapter.add(movies);
+                mProgress.setVisibility(View.GONE);
+                // For listening content updates for tow pane mode
+                //if (mSortBy.equals(Constants.FAVORITES)) {
+                //    getSupportLoaderManager().initLoader(FAV_MOVIE_LOADER, null, this);
+                //}
+            }
+            updateEmptyState();
+        } else {
+            fetchMovies(mSortBy);
+        }
+
     }
 
-    private ProgressBar mProgress;
 
-    private void initializeWidgets(){
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        mRecyclerView = (RecyclerView) findViewById(R.id.movie_list);
-        mProgress = (ProgressBar) findViewById(R.id.progress);
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        ArrayList<Movie> movies = mAdapter.getMovies();
+        if (movies != null && !movies.isEmpty()) {
+            outState.putParcelableArrayList(Constants.EXTRA_MOVIES, movies);
+        }
+        outState.putString(Constants.EXTRA_SORT_BY, mSortBy);
 
+        if (!mSortBy.equals(Constants.FAVORITES)) {
+            getSupportLoaderManager().destroyLoader(FAV_MOVIE_LOADER);
+        }
     }
 
     @Override
@@ -85,20 +106,23 @@ public class MovieListActivity extends AppCompatActivity implements FetchMoviesT
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.sort_by_most_popular:
-                //Toast.makeText(getApplicationContext(),"Most Popular",Toast.LENGTH_SHORT).show();
-                mProgress.setVisibility(View.VISIBLE);
-                new FetchMoviesTask(Constants.MOST_POPULAR,this).execute();
+                if (mSortBy.equals(Constants.FAVORITES)) {
+                    getSupportLoaderManager().destroyLoader(FAV_MOVIE_LOADER);
+                }
+                mSortBy = Constants.MOST_POPULAR;
+                fetchMovies(mSortBy);
                 item.setChecked(true);
                 break;
             case R.id.sort_by_top_rated:
-                //Toast.makeText(getApplicationContext(),"Top Rated",Toast.LENGTH_SHORT).show();
-                mProgress.setVisibility(View.VISIBLE);
-                new FetchMoviesTask(Constants.TOP_RATED,this).execute();
+                if (mSortBy.equals(Constants.FAVORITES)) {
+                    getSupportLoaderManager().destroyLoader(FAV_MOVIE_LOADER);
+                }
+                mSortBy = Constants.TOP_RATED;
+                fetchMovies(mSortBy);
                 item.setChecked(true);
                 break;
             case R.id.sort_by_favorites:
-                mProgress.setVisibility(View.VISIBLE);
-                Toast.makeText(getApplicationContext(),"Favorites",Toast.LENGTH_SHORT).show();
+                mSortBy = Constants.FAVORITES;
                 fetchMovies(Constants.FAVORITES);
                 item.setChecked(true);
                 break;
@@ -113,31 +137,38 @@ public class MovieListActivity extends AppCompatActivity implements FetchMoviesT
     public void onFetchFinished(ArrayList<Movie> movies) {
         mProgress.setVisibility(View.GONE);
         mAdapter.add(movies);
+        updateEmptyState();
 
     }
-    private void fetchMovies(String sortBy){
-        if(sortBy.equals(Constants.FAVORITES)){
-            getSupportLoaderManager().initLoader(FAV_MOVIE_LOADER,null,this);
+
+    private void fetchMovies(String sortBy) {
+        if (sortBy.equals(Constants.FAVORITES)) {
+            getSupportLoaderManager().initLoader(FAV_MOVIE_LOADER, null, this);
+        } else {
+            mProgress.setVisibility(View.VISIBLE);
+            new FetchMoviesTask(sortBy, this).execute();
         }
+
     }
+
     //MovieListAdapter callbacks
     @Override
     public void open(Movie movie, int position) {
         //Snackbar.make(findViewById(R.id.coordinatorLayout),"Movie returned: " + movie.getTitle(),Snackbar.LENGTH_LONG).show();
-        if(mTwoPane){
+        if (mTwoPane) {
 
             MovieDetailFragment fragment = new MovieDetailFragment();
             Bundle args = new Bundle();
-            args.putParcelable(Constants.ARG_MOVIE,movie);
+            args.putParcelable(Constants.ARG_MOVIE, movie);
             fragment.setArguments(args);
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.movie_detail_container,fragment)
+                    .replace(R.id.movie_detail_container, fragment)
                     .commit();
 
 
-        }else{
+        } else {
             Intent intent = new Intent(this, MovieDetailActivity.class);
-            intent.putExtra(Constants.ARG_MOVIE,movie);
+            intent.putExtra(Constants.ARG_MOVIE, movie);
             startActivity(intent);
         }
 
@@ -157,6 +188,7 @@ public class MovieListActivity extends AppCompatActivity implements FetchMoviesT
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         mAdapter.add(data);
+        updateEmptyState();
         findViewById(R.id.progress).setVisibility(View.GONE);
 
     }
@@ -165,4 +197,37 @@ public class MovieListActivity extends AppCompatActivity implements FetchMoviesT
     public void onLoaderReset(Loader<Cursor> loader) {
 
     }
+
+    /**
+     * *************************************************************************************************
+     * <p>
+     * <p>
+     * *************************************************************************************************
+     */
+    private ProgressBar mProgress;
+
+    private void initializeWidgets() {
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mRecyclerView = (RecyclerView) findViewById(R.id.movie_list);
+        mProgress = (ProgressBar) findViewById(R.id.progress);
+
+    }
+
+    private void updateEmptyState() {
+        if (mAdapter.getItemCount() == 0) {
+            if (mSortBy.equals(Constants.FAVORITES)) {
+                findViewById(R.id.empty_state_favorites_container).setVisibility(View.VISIBLE);
+                findViewById(R.id.empty_state_connection_container).setVisibility(View.GONE);
+            } else {
+                findViewById(R.id.empty_state_connection_container).setVisibility(View.GONE);
+                findViewById(R.id.empty_state_favorites_container).setVisibility(View.GONE);
+            }
+
+        } else {
+
+            findViewById(R.id.empty_state_connection_container).setVisibility(View.GONE);
+            findViewById(R.id.empty_state_favorites_container).setVisibility(View.GONE);
+        }
+    }
+
 }

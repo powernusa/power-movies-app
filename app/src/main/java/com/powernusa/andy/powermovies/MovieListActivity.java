@@ -67,11 +67,14 @@ public class MovieListActivity extends AppCompatActivity implements FetchMoviesT
             if (savedInstanceState.containsKey(Constants.EXTRA_MOVIES)) {
                 ArrayList<Movie> movies = savedInstanceState.getParcelableArrayList(Constants.EXTRA_MOVIES);
                 mAdapter.add(movies);
-                mProgress.setVisibility(View.GONE);
+                Toast.makeText(this,"size of movies: " + movies.size(),Toast.LENGTH_SHORT).show();
+                Log.d(LOG_TAG,"movie size: " + movies.size());
+                //mProgress.setVisibility(View.GONE);
+                findViewById(R.id.progress).setVisibility(View.GONE);
                 // For listening content updates for tow pane mode
-                //if (mSortBy.equals(Constants.FAVORITES)) {
-                //    getSupportLoaderManager().initLoader(FAV_MOVIE_LOADER, null, this);
-                //}
+                if (mSortBy.equals(Constants.FAVORITES)) {
+                    getSupportLoaderManager().initLoader(FAV_MOVIE_LOADER, null, this);
+                }
             }
             updateEmptyState();
         } else {
@@ -123,7 +126,7 @@ public class MovieListActivity extends AppCompatActivity implements FetchMoviesT
                 break;
             case R.id.sort_by_favorites:
                 mSortBy = Constants.FAVORITES;
-                fetchMovies(Constants.FAVORITES);
+                fetchMovies(mSortBy);
                 item.setChecked(true);
                 break;
 

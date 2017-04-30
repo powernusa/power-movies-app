@@ -91,6 +91,7 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.View
                 String rating = cursor.getString(MovieContract.MovieEntry.COL_MOVIE_VOTE_AVERAGE);
                 String releaseDate = cursor.getString(MovieContract.MovieEntry.COL_MOVIE_RELEASE_DATE);
                 String backdropPath = cursor.getString(MovieContract.MovieEntry.COL_MOVIE_BACKDROP_PATH);
+                //String backdropPath = null;
                 Movie movie = new Movie(id,title,posterPath,overview,rating,releaseDate,backdropPath);
                 mMovies.add(movie);
             }while(cursor.moveToNext());

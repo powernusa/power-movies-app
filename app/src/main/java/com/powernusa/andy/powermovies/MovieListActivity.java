@@ -3,8 +3,6 @@ package com.powernusa.andy.powermovies;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -27,10 +25,6 @@ import com.powernusa.andy.powermovies.network.Movie;
 import com.powernusa.andy.powermovies.utility.Constants;
 
 import java.util.ArrayList;
-import java.util.List;
-
-import butterknife.Bind;
-import butterknife.ButterKnife;
 
 public class MovieListActivity extends AppCompatActivity implements FetchMoviesTask.Listener,
         MovieListAdapter.Callbacks, LoaderManager.LoaderCallbacks<Cursor> {
@@ -41,7 +35,7 @@ public class MovieListActivity extends AppCompatActivity implements FetchMoviesT
     Toolbar mToolbar;
 
     private RecyclerView mRecyclerView;
-    private MovieListAdapter mAdapter;
+    private MovieListAdapter mMovieListAdapter;
     private boolean mTwoPane;
     private String mSortBy = Constants.MOST_POPULAR;
 
@@ -57,16 +51,16 @@ public class MovieListActivity extends AppCompatActivity implements FetchMoviesT
 
         mTwoPane = findViewById(R.id.movie_detail_container) != null;
 
-        mAdapter = new MovieListAdapter(new ArrayList<Movie>(), this);
+        mMovieListAdapter = new MovieListAdapter(new ArrayList<Movie>(), this);
         int num_cols = getResources().getInteger(R.integer.grid_num_cols);
         mRecyclerView.setLayoutManager(new GridLayoutManager(this, num_cols));
-        mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.setAdapter(mMovieListAdapter);
 
         if (savedInstanceState != null) {
             mSortBy = savedInstanceState.getString(Constants.EXTRA_SORT_BY);
             if (savedInstanceState.containsKey(Constants.EXTRA_MOVIES)) {
                 ArrayList<Movie> movies = savedInstanceState.getParcelableArrayList(Constants.EXTRA_MOVIES);
-                mAdapter.add(movies);
+                mMovieListAdapter.add(movies);
                 Toast.makeText(this,"size of movies: " + movies.size(),Toast.LENGTH_SHORT).show();
                 Log.d(LOG_TAG,"movie size: " + movies.size());
                 //mProgress.setVisibility(View.GONE);
@@ -87,7 +81,7 @@ public class MovieListActivity extends AppCompatActivity implements FetchMoviesT
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        ArrayList<Movie> movies = mAdapter.getMovies();
+        ArrayList<Movie> movies = mMovieListAdapter.getMovies();
         if (movies != null && !movies.isEmpty()) {
             outState.putParcelableArrayList(Constants.EXTRA_MOVIES, movies);
         }
@@ -139,7 +133,7 @@ public class MovieListActivity extends AppCompatActivity implements FetchMoviesT
     @Override
     public void onFetchFinished(ArrayList<Movie> movies) {
         mProgress.setVisibility(View.GONE);
-        mAdapter.add(movies);
+        mMovieListAdapter.add(movies);
         updateEmptyState();
 
     }
@@ -190,7 +184,7 @@ public class MovieListActivity extends AppCompatActivity implements FetchMoviesT
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        mAdapter.add(data);
+        mMovieListAdapter.add(data);
         updateEmptyState();
         findViewById(R.id.progress).setVisibility(View.GONE);
 
@@ -217,7 +211,7 @@ public class MovieListActivity extends AppCompatActivity implements FetchMoviesT
     }
 
     private void updateEmptyState() {
-        if (mAdapter.getItemCount() == 0) {
+        if (mMovieListAdapter.getItemCount() == 0) {
             if (mSortBy.equals(Constants.FAVORITES)) {
                 findViewById(R.id.empty_state_favorites_container).setVisibility(View.VISIBLE);
                 findViewById(R.id.empty_state_connection_container).setVisibility(View.GONE);

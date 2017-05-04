@@ -12,3 +12,11 @@ The purpose of this project was to built an app, optimized for tablets, to help 
 <a href="https://www.youtube.com/watch?v=Br8zCcp1mGg" target="_blank"><img src="https://cloud.githubusercontent.com/assets/13763933/25564539/b8c0f8c4-2ddf-11e7-8900-dbe1d79f4e07.jpg" 
 alt="better youtube text here" width="100%" height="540" border="10" /></a>
 
+# License
+Copyright 2017 Andy Soelistio
+
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.

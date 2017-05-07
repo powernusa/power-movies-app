@@ -43,7 +43,7 @@ public class FetchMoviesTask extends AsyncTask<Void,Void,ArrayList<Movie>>{<br>
         mSortBy = sortBy;
         mListener = listener;
     }
-
+	<b>
     @Override
     protected ArrayList<Movie> doInBackground(Void... voids) {
         Retrofit retrofit = new Retrofit.Builder()
@@ -64,7 +64,7 @@ public class FetchMoviesTask extends AsyncTask<Void,Void,ArrayList<Movie>>{<br>
         }
         return null;
     }
-
+	</b>
 
     @Override
     protected void onPostExecute(ArrayList<Movie> movies) {

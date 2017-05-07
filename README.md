@@ -13,7 +13,7 @@ The purpose of this project was to built an app, optimized for tablets, to help 
 alt="better youtube text here" width="100%" height="540" border="10" /></a>
 
 ### Notes On Using Retrofit
-
+<pre><code>
 public interface MovieDatabaseService { <br>
     @GET("3/movie/{sort_by}")<br>
     Call<Movies> discoverMovies(@Path("sort_by")String sortBy, @Query("api_key")String apiKey);
@@ -77,7 +77,7 @@ public class FetchMoviesTask extends AsyncTask<Void,Void,ArrayList<Movie>>{<br>
         }
     }
 }
-
+</code></pre>
 
 # License
 Copyright 2017 Andy Soelistio

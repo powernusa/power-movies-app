@@ -14,7 +14,7 @@ alt="better youtube text here" width="100%" height="540" border="10" /></a>
 
 ### Notes On Using Retrofit
 
-<img width="100%" src="https://cloud.githubusercontent.com/assets/13763933/25784734/50def676-339c-11e7-9f96-b3aeea4904a2.jpg"/>
+<img width="100%" src="https://cloud.githubusercontent.com/assets/13763933/25784860/6fb59a76-339e-11e7-90d1-d65d1fdb7846.jpg"/>
 
 
 # License

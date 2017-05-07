@@ -13,71 +13,9 @@ The purpose of this project was to built an app, optimized for tablets, to help 
 alt="better youtube text here" width="100%" height="540" border="10" /></a>
 
 ### Notes On Using Retrofit
-<pre><code>
-public interface MovieDatabaseService { <br>
-    @GET("3/movie/{sort_by}")<br>
-    Call<Movies> discoverMovies(@Path("sort_by")String sortBy, @Query("api_key")String apiKey);
 
-    //http://api.themoviedb.org/3/movie/209112/videos?api_key=-----------------------------
-    @GET("3/movie/{id}/videos")
-    Call<Trailers> findTrailersById(@Path("id") long movieId,@Query("api_key")String apiKey);
+<img width="100%" src="https://cloud.githubusercontent.com/assets/13763933/25784734/50def676-339c-11e7-9f96-b3aeea4904a2.jpg"/>
 
-    //http://api.themoviedb.org/3/movie/209112/reviews?api_key=-----------------------------
-    @GET("3/movie/{id}/reviews")
-    Call<Reviews> findReviewsById(@Path("id") long movieId,@Query("api_key")String apiKey);
-}
-
-public class FetchMoviesTask extends AsyncTask<Void,Void,ArrayList<Movie>>{<br>
-    public static final String LOG_TAG = FetchMoviesTask.class.getSimpleName();<br>
-
-    private String mSortBy;
-    private FetchMoviesTask.Listener mListener;
-
-    interface Listener{
-        void onFetchFinished(ArrayList<Movie> movies);
-    }
-
-    //public FetchMoviesTask(){}
-    public FetchMoviesTask(String sortBy, FetchMoviesTask.Listener listener){
-
-        mSortBy = sortBy;
-        mListener = listener;
-    }
-	<b>
-    @Override
-    protected ArrayList<Movie> doInBackground(Void... voids) {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        MovieDatabaseService service = retrofit.create(MovieDatabaseService.class);
-        Call<Movies> call = service.discoverMovies(mSortBy,Constants.API_KEY);
-
-        try {
-            Response<Movies> response = call.execute();
-            Movies movies = response.body();
-            return movies.getMovies();
-        } catch (IOException e) {
-            Log.e(LOG_TAG,"A problem occured talking to the movie db",e);
-            e.printStackTrace();
-        }
-        return null;
-    }
-	</b>
-
-    @Override
-    protected void onPostExecute(ArrayList<Movie> movies) {
-        if(movies!= null && !movies.isEmpty()){
-
-            mListener.onFetchFinished(movies);
-        }
-        else{
-            //no movies returned
-        }
-    }
-}
-</code></pre>
 
 # License
 Copyright 2017 Andy Soelistio

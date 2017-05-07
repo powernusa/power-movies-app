@@ -14,8 +14,13 @@ alt="better youtube text here" width="100%" height="540" border="10" /></a>
 
 ### Notes On Using Retrofit
 
+### Using FetchMoviesTask
+
 <img width="100%" src="https://cloud.githubusercontent.com/assets/13763933/25784860/6fb59a76-339e-11e7-90d1-d65d1fdb7846.jpg"/>
 
+### Using FetchTrailersTask
+
+<img width="100%" src="https://cloud.githubusercontent.com/assets/13763933/25784900/291a66a4-339f-11e7-9237-ed540b20128d.jpg"/>
 
 # License
 Copyright 2017 Andy Soelistio

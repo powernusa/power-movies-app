@@ -12,7 +12,7 @@ The purpose of this project was to built an app, optimized for tablets, to help 
 <a href="https://www.youtube.com/watch?v=Br8zCcp1mGg" target="_blank"><img src="https://cloud.githubusercontent.com/assets/13763933/25564539/b8c0f8c4-2ddf-11e7-8900-dbe1d79f4e07.jpg" 
 alt="better youtube text here" width="100%" height="540" border="10" /></a>
 
-### Notes On Using Retrofit
+# Notes On Using Retrofit
 
 ### Using FetchMoviesTask
 

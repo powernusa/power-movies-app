@@ -14,8 +14,8 @@ alt="better youtube text here" width="100%" height="540" border="10" /></a>
 
 ### Notes On Using Retrofit
 
-public interface MovieDatabaseService {
-    @GET("3/movie/{sort_by}")
+public interface MovieDatabaseService { <br>
+    @GET("3/movie/{sort_by}")<br>
     Call<Movies> discoverMovies(@Path("sort_by")String sortBy, @Query("api_key")String apiKey);
 
     //http://api.themoviedb.org/3/movie/209112/videos?api_key=-----------------------------
@@ -27,8 +27,8 @@ public interface MovieDatabaseService {
     Call<Reviews> findReviewsById(@Path("id") long movieId,@Query("api_key")String apiKey);
 }
 
-public class FetchMoviesTask extends AsyncTask<Void,Void,ArrayList<Movie>>{
-    public static final String LOG_TAG = FetchMoviesTask.class.getSimpleName();
+public class FetchMoviesTask extends AsyncTask<Void,Void,ArrayList<Movie>>{<br>
+    public static final String LOG_TAG = FetchMoviesTask.class.getSimpleName();<br>
 
     private String mSortBy;
     private FetchMoviesTask.Listener mListener;
